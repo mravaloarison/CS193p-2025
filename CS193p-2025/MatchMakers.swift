@@ -43,5 +43,5 @@ struct MatchMakers: View {
 }
 
 #Preview {
-    MatchMakers(matches: [.correctPosition, .notInTheCode, .correctPosition, .wrongPosition])
+    MatchMakers(matches: [.correctPosition, .wrongPosition, .notInTheCode, .correctPosition])
 }
