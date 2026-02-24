@@ -11,7 +11,7 @@ import SwiftUI
 typealias Peg = Color
 
 struct CodeBreaker {
-    var masterCode = Code(kind: .masterCode)
+    var masterCode = Code(kind: .masterCode(isHidden: true))
     var guess = Code(kind: .guess)
     var attempts = [Code]()
     let pegChoices: [Peg]
@@ -19,70 +19,29 @@ struct CodeBreaker {
     init(pegChoices: [Peg] = [.blue, .brown, .green, .red]) {
         self.pegChoices = pegChoices
         masterCode.randomize(from: pegChoices)
+        
+        print(masterCode.pegs)
     }
     
-    mutating func changeGuessPeg(at index: Int) {
-        let existingPeg = guess.pegs[index]
-        if let indexOfcurrentPeg = pegChoices.firstIndex(of: existingPeg) {
-            let newPeg = pegChoices[(indexOfcurrentPeg + 1) % pegChoices.count]
-            guess.pegs[index] = newPeg
-        } else {
-            guess.pegs[index] = pegChoices.first ?? Code.missing
-        }
+    var isGameOver: Bool {
+        attempts.last?.pegs == masterCode.pegs
+    }
+    
+    mutating func changeGuessPeg(to peg: Peg, at index: Int) {
+        guess.pegs[index] = peg
     }
     
     mutating func attemptGuess() {
         var currentGuess = self.guess
         currentGuess.kind = .attempts(guess.match(against: masterCode))
         attempts.append(currentGuess)
-    }
-}
-
-struct Code {
-    var kind: Kind
-    var pegs: [Peg] = Array(repeating: Code.missing, count: 4)
-    
-    static var missing: Peg = .clear
-    
-    enum Kind: Equatable {
-        case masterCode
-        case guess
-        case attempts([Match])
-    }
-    
-    var matches: [Match] {
-        switch kind {
-        case .attempts(let matches): return matches
-        default: return []
-        }
-    }
-    
-    mutating func randomize(from pegChoices: [Peg]) {
-        for index in pegChoices.indices {
-            pegs[index] = pegChoices.randomElement() ?? Code.missing
-        }
-    }
-    
-    func match(against otherCode: Code) -> [Match] {
-        var results: [Match] = Array(repeating: .notInTheCode, count: pegs.count)
-        var pegsToMatch = otherCode.pegs
         
-        for index in pegs.indices.reversed() {
-            if pegsToMatch.count > index, pegsToMatch[index] == pegs[index] {
-                results[index] = .correctPosition
-                pegsToMatch.remove(at: index)
-            }
+        if isGameOver {
+            masterCode.kind = .masterCode(isHidden: false)
         }
-        
-        for index in pegs.indices {
-            if results[index] != .correctPosition {
-                if let matchIndex = pegsToMatch.firstIndex(of: pegs[index]) {
-                    results[index] = .wrongPosition
-                    pegsToMatch.remove(at: matchIndex)
-                }
-            }
-        }
-        
-        return results
+    }
+    
+    mutating func resetGuess() {
+        self.guess.pegs = Array(repeating: Code.missingPeg, count: 4)
     }
 }
