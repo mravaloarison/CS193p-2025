@@ -24,11 +24,23 @@ struct CodeBreaker {
     }
     
     var isGameOver: Bool {
-        attempts.last?.pegs == masterCode.pegs
+        if let last = attempts.last {
+            return last.pegs == masterCode.pegs
+        } else {
+            return false
+        }
+    }
+    
+    var hasAtLeastOneGuess: Bool {
+        return guess.pegs.contains { $0 != Code.missingPeg }
     }
     
     mutating func changeGuessPeg(to peg: Peg, at index: Int) {
         guess.pegs[index] = peg
+    }
+    
+    mutating func undoChange(at index: Int) {
+        guess.pegs[index] = Code.missingPeg
     }
     
     mutating func attemptGuess() {
@@ -44,4 +56,11 @@ struct CodeBreaker {
     mutating func resetGuess() {
         self.guess.pegs = Array(repeating: Code.missingPeg, count: 4)
     }
+    
+    mutating func restart() {
+        resetGuess()
+        self.attempts.removeAll()
+        self.masterCode = Code(kind: .masterCode(isHidden: true))
+    }
 }
+

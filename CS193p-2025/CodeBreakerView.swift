@@ -13,23 +13,47 @@ struct CodeBreakerView: View {
     
     var body: some View {
         VStack {
+            restartButton
             view(for: game.masterCode)
-            ScrollView {
-                if !game.isGameOver {
-                    view(for: game.guess)
-                }
-                ForEach(game.attempts.indices.reversed(), id: \.self) { index in
-                    view (for: game.attempts[index])
-                }
-            }
+            guessesView
             Spacer()
-            
+            KeyboardView
+        }
+        .padding()
+    }
+    
+    var restartButton: some View {
+        Button {
+            game.restart()
+            selection = 0
+        } label: {
+            Image(systemName: "arrow.trianglehead.counterclockwise")
+            Text("Restart")
+        }
+    }
+    
+    var guessesView: some View {
+        ScrollView {
+            if !game.isGameOver {
+                view(for: game.guess)
+            }
+            ForEach(game.attempts.indices.reversed(), id: \.self) { index in
+                view (for: game.attempts[index])
+            }
+        }
+    }
+    
+    var KeyboardView: some View {
+        HStack {
             PegChooser(choices: game.pegChoices, isGameOver: game.isGameOver) { peg in
                 game.changeGuessPeg(to: peg, at: selection)
                 selection = (selection + 1) % game.pegChoices.count
             }
+            
+            if !game.isGameOver {
+                undoChangesButton
+            }
         }
-        .padding()
     }
     
     var attemptButton: some View {
@@ -39,6 +63,21 @@ struct CodeBreakerView: View {
             }
             game.resetGuess()
             selection = 0
+        }
+        .disabled(!game.hasAtLeastOneGuess)
+    }
+    
+    var undoChangesButton: some View {
+        Button {
+            let codeLength = game.pegChoices.count
+            let latestChangeIndex = (selection - 1 + codeLength) % codeLength
+            game.undoChange(at: latestChangeIndex)
+            selection = latestChangeIndex
+        } label: {
+            HStack {
+                Image(systemName: "arrow.uturn.backward")
+                Text("Undo")
+            }
         }
     }
     
