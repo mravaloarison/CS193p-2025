@@ -38,6 +38,7 @@ struct Code {
         for index in pegChoices.indices {
             pegs[index] = pegChoices.randomElement() ?? Code.missingPeg
         }
+        print(pegs)
     }
     
     func match(against otherCode: Code) -> [Match] {
