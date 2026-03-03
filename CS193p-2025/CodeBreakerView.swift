@@ -51,7 +51,7 @@ struct CodeBreakerView: View {
         HStack {
             PegChooser(choices: game.pegChoices, isGameOver: game.isGameOver) { peg in
                 game.changeGuessPeg(to: peg, at: selection)
-                selection = (selection + 1) % game.pegChoices.count
+                selection = (selection + 1) % game.masterCode.pegs.count
             }
             
             if !game.isGameOver {
@@ -101,7 +101,7 @@ struct CodeBreakerView: View {
 }
 
 #Preview {
-    @Previewable @State var game = CodeBreaker(name: "Player", pegChoices: [.brown, .cyan, .blue, .purple])
+    @Previewable @State var game = CodeBreaker(name: "Player", pegChoices: [.brown, .cyan, .blue])
     NavigationStack {
         CodeBreakerView(game: game)
     }

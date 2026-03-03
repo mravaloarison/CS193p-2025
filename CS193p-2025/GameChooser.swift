@@ -28,7 +28,7 @@ struct GameChooser: View {
         .onAppear {
             games.append(CodeBreaker(name: "Game 1", pegChoices: [.blue, .yellow, .indigo, .green]))
             games.append(CodeBreaker(name: "Second Colors", pegChoices: [.cyan, .blue, .purple, .brown]))
-            games.append(CodeBreaker(name: "Last Game", pegChoices: [.black, .yellow, .pink, .red]))
+            games.append(CodeBreaker(name: "Last Game", pegChoices: [.black, .yellow, .pink]))
             
         }
     }
