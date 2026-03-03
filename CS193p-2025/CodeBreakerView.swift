@@ -8,16 +8,20 @@
 import SwiftUI
 
 struct CodeBreakerView: View {
-    @State private var game = CodeBreaker(pegChoices: [.indigo, .pink, .purple, .blue])
+    let game: CodeBreaker
     @State private var selection: Int = 0
     
     var body: some View {
         VStack {
-            restartButton
             view(for: game.masterCode)
             guessesView
             Spacer()
             KeyboardView
+        }
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                restartButton
+            }
         }
         .padding()
     }
@@ -97,5 +101,8 @@ struct CodeBreakerView: View {
 }
 
 #Preview {
-    CodeBreakerView()
+    @Previewable @State var game = CodeBreaker(name: "Player", pegChoices: [.brown, .cyan, .blue, .purple])
+    NavigationStack {
+        CodeBreakerView(game: game)
+    }
 }

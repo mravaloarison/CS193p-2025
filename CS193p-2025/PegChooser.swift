@@ -14,14 +14,15 @@ struct PegChooser: View {
     
     var body: some View {
         if isGameOver {
-            Text("🥳 Congratulations! You win!")
+            Text("🥳 Congratulations! You won!")
         } else {
             HStack {
                 ForEach(choices, id: \.self) { peg in
                     Button {
                         onChoose?(peg)
                     } label: {
-                        ConstantPeg.shape                            .contentShape(Rectangle())
+                        ConstantPeg.shape
+                            .contentShape(Rectangle())
                             .foregroundStyle(peg)
                             .aspectRatio(1, contentMode: .fit)
                     }

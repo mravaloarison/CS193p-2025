@@ -10,13 +10,15 @@ import SwiftUI
 // no need to create struct Peg var color
 typealias Peg = Color
 
-struct CodeBreaker {
+@Observable class CodeBreaker {
+    var name: String
     var masterCode = Code(kind: .masterCode(isHidden: true))
     var guess = Code(kind: .guess)
     var attempts = [Code]()
     let pegChoices: [Peg]
     
-    init(pegChoices: [Peg] = [.blue, .brown, .green, .red]) {
+    init(name: String = "No name assinged", pegChoices: [Peg] = [.blue, .brown, .green, .red]) {
+        self.name = name
         self.pegChoices = pegChoices
         masterCode.randomize(from: pegChoices)
     }
@@ -33,15 +35,15 @@ struct CodeBreaker {
         return guess.pegs.contains { $0 != Code.missingPeg }
     }
     
-    mutating func changeGuessPeg(to peg: Peg, at index: Int) {
+    func changeGuessPeg(to peg: Peg, at index: Int) {
         guess.pegs[index] = peg
     }
     
-    mutating func undoChange(at index: Int) {
+    func undoChange(at index: Int) {
         guess.pegs[index] = Code.missingPeg
     }
     
-    mutating func attemptGuess() {
+    func attemptGuess() {
         var currentGuess = self.guess
         currentGuess.kind = .attempts(guess.match(against: masterCode))
         attempts.append(currentGuess)
@@ -51,15 +53,25 @@ struct CodeBreaker {
         }
     }
     
-    mutating func resetGuess() {
+    func resetGuess() {
         self.guess.pegs = Array(repeating: Code.missingPeg, count: 4)
     }
     
-    mutating func restart() {
+    func restart() {
         resetGuess()
         self.attempts = [Code]()
         self.masterCode = Code(kind: .masterCode(isHidden: true))
         masterCode.randomize(from: pegChoices)
+    }
+}
+
+extension CodeBreaker: Identifiable, Hashable, Equatable {
+    static func == (lhs: CodeBreaker, rhs: CodeBreaker) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }
 
