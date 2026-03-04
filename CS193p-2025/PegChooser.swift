@@ -25,6 +25,7 @@ struct PegChooser: View {
                             .contentShape(Rectangle())
                             .foregroundStyle(peg)
                             .aspectRatio(1, contentMode: .fit)
+                            .frame(maxHeight: ConstantPeg.maxHeight)
                     }
                 }
             }

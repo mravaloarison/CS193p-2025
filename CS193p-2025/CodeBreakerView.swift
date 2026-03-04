@@ -23,6 +23,8 @@ struct CodeBreakerView: View {
                 restartButton
             }
         }
+        .navigationTitle(game.name)
+        .navigationBarTitleDisplayMode(.inline)
         .padding()
     }
     

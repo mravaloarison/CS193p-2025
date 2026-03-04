@@ -9,4 +9,5 @@ import SwiftUI
 
 struct ConstantPeg {
     static let shape = RoundedRectangle(cornerRadius: 10)
+    static let maxHeight = CGFloat(80)
 }
